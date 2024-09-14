@@ -13,14 +13,14 @@ class TaskListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         task = serializer.save()
         event_id = create_google_event(task)
-        task.google_event_id = event_id
+        task.google_calendar_id = event_id
         task.save()
 
 
-class TaskRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = EventSerializer
 
     def perform_destroy(self, instance):
-        delete_google_event(instance.google_event_id)
+        delete_google_event(instance.google_calendar_id)
         instance.delete()
