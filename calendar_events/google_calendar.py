@@ -21,3 +21,13 @@ def create_google_event(task):
             "timeZone": "UTC",
         },
     }
+
+    event = service.events().insert(calendarId="primary", body=event).execute()
+    return event.get("id")
+
+
+def delete_google_event(event_id):
+    creds = Credentials.from_authorized_user_file("credentials.json")
+    service = build("calendar", "v3", credentials=creds)
+
+    service.events().delete(calendarId="primary", eventId=event_id).execute()
