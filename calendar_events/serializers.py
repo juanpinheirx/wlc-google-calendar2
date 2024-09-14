@@ -1,8 +1,8 @@
 from rest_framework import serializers
+from .models import Task
 
 
 class EventSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    title = serializers.CharField(max_length=200)
-    description = serializers.CharField()
-    date = serializers.DateField()
+    class Meta:
+        model = Task
+        fields = "__all__"
