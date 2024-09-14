@@ -1,4 +1,4 @@
-from rest_framework import viewsets, filters, generics
+from rest_framework import generics
 from .models import Task
 from .serializers import EventSerializer
 from .google_calendar import create_google_event, delete_google_event
