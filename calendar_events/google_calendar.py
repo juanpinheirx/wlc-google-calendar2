@@ -42,36 +42,43 @@ def get_google_service():
 
 
 def create_google_event(task):
-    service = get_google_service()
+    try:
+        service = get_google_service()
 
-    duration = timedelta(hours=1)
+        duration = timedelta(hours=1)
 
-    if task.time:
-        start_datetime = datetime.combine(task.date, task.time)
-    else:
-        start_datetime = datetime.combine(task.date, datetime.min.time())
+        if task.time:
+            start_datetime = datetime.combine(task.date, task.time)
+        else:
+            start_datetime = datetime.combine(task.date, datetime.min.time())
 
-    end_datetime = start_datetime + duration
+        end_datetime = start_datetime + duration
 
-    event = {
-        "summary": task.title,
-        "description": task.description,
-        "start": {
-            "dateTime": start_datetime.isoformat(),
-            "timeZone": "America/Sao_Paulo",
-        },
-        "end": {
-            "dateTime": end_datetime.isoformat(),
-            "timeZone": "America/Sao_Paulo",
-        },
-    }
+        event = {
+            "summary": task.title,
+            "description": task.description,
+            "start": {
+                "dateTime": start_datetime.isoformat(),
+                "timeZone": "America/Sao_Paulo",
+            },
+            "end": {
+                "dateTime": end_datetime.isoformat(),
+                "timeZone": "America/Sao_Paulo",
+            },
+        }
 
-    event = service.events().insert(calendarId="primary", body=event).execute()
-    return event["id"]
+        event = service.events().insert(calendarId="primary", body=event).execute()
+        return event["id"]
+    except Exception as e:
+        print(f"Erro ao criar evento no Google Calendar: {e}")
+        return None
 
 
 def delete_google_event(event_id):
-    service = get_google_service()
-
-    service.events().delete(calendarId="primary", eventId=event_id).execute()
-    return True
+    try:
+        service = get_google_service()
+        service.events().delete(calendarId="primary", eventId=event_id).execute()
+        return True
+    except Exception as e:
+        print(f"Erro ao deletar evento no Google Calendar: {e}")
+        return False
