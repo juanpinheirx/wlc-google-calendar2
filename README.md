@@ -1,5 +1,4 @@
-# Integração do Google Calendar com Django Rest Framework
-
+# Integração Google Calendar com Django
 Este projeto integra o Google Calendar com o seu aplicativo Django usando o Django Rest Framework (DRF). Ele permite criar e deletar eventos no Google Calendar usando a API do Google e protege endpoints com autenticação JWT.
 
 ## Pré-requisitos
@@ -17,7 +16,7 @@ Este projeto integra o Google Calendar com o seu aplicativo Django usando o Djan
 
     ```bash
     git clone https://github.com/juanpinheirx/wlc-google-calendar2
-    cd seu-repositorio
+    cd wlc-google-calendar2
     ```
 
 2. **Crie um ambiente virtual**:
@@ -191,7 +190,37 @@ Authorization: Bearer <token_de_acesso>
 }
 ```
 
-## Estrutura do Projeto
+## Testes
+
+Para garantir que tudo está funcionando corretamente, você pode executar os testes automatizados. Siga os passos abaixo para configurar e executar os testes:
+
+1. **Instale as dependências de teste**:
+
+    ```bash
+    pip install pytest pytest-django pytest-mock
+    ```
+
+2. **Configure o pytest**:
+
+    Crie um arquivo `pytest.ini` no diretório raiz do projeto com o seguinte conteúdo:
+
+    ```ini
+    [pytest]
+    DJANGO_SETTINGS_MODULE = calendar_api.settings
+    python_files = tests.py test_*.py *_tests.py
+    ```
+
+3. **Execute os testes**:
+
+    No diretório raiz do projeto, execute o seguinte comando:
+
+    ```bash
+    pytest
+    ```
+
+    Isso irá procurar por todos os arquivos de teste e executá-los.
+
+### Estrutura do Projeto
 
 ```plaintext
 seu-repositorio/
@@ -204,7 +233,9 @@ seu-repositorio/
 │   ├── google_calendar.py
 │   ├── models.py
 │   ├── serializers.py
-│   ├── tests.py
+│   ├── tests/
+│   │   ├── __init__.py
+│   │   ├── test_google_calendar.py
 │   ├── views.py
 │   ├── urls.py
 │   └── ...
