@@ -1,11 +1,13 @@
-# Integração com Google Calendar
+# Integração do Google Calendar com Django Rest Framework
 
-Este projeto integra o Google Calendar com o seu aplicativo Django usando o Django Rest Framework (DRF). Ele permite criar e deletar eventos no Google Calendar usando a API do Google.
+Este projeto integra o Google Calendar com o seu aplicativo Django usando o Django Rest Framework (DRF). Ele permite criar e deletar eventos no Google Calendar usando a API do Google e protege endpoints com autenticação JWT.
 
 ## Pré-requisitos
 
 - Python 3.6+
 - Django
+- Django Rest Framework
+- Django Rest Framework SimpleJWT
 - Google API Client Library for Python (`google-api-python-client`)
 - Biblioteca `python-dotenv` para carregar variáveis de ambiente
 
@@ -69,22 +71,18 @@ Este projeto integra o Google Calendar com o seu aplicativo Django usando o Djan
 
 ## Uso
 
-### Endpoints da API
+### Autenticação
 
-A API fornece endpoints para criar e deletar eventos no Google Calendar.
+#### Obter Token JWT
 
-#### Criar um Evento
-
-**Endpoint**: `POST /api/tasks/`
+**Endpoint**: `POST /api/token/`
 
 **Exemplo de Requisição**:
 
 ```json
 {
-     "title": "Reunião de Projeto",
-     "description": "Discussão sobre o progresso do projeto",
-     "date": "2023-10-01",
-     "time": "14:00:00"
+    "username": "seu_usuario",
+    "password": "sua_senha"
 }
 ```
 
@@ -92,12 +90,66 @@ A API fornece endpoints para criar e deletar eventos no Google Calendar.
 
 ```json
 {
-     "id": 1,
-     "title": "Reunião de Projeto",
-     "description": "Discussão sobre o progresso do projeto",
-     "date": "2023-10-01",
-     "time": "14:00:00",
-     "google_calendar_id": "abc123"
+    "refresh": "token_de_atualizacao",
+    "access": "token_de_acesso"
+}
+```
+
+#### Atualizar Token JWT
+
+**Endpoint**: `POST /api/token/refresh/`
+
+**Exemplo de Requisição**:
+
+```json
+{
+    "refresh": "token_de_atualizacao"
+}
+```
+
+**Exemplo de Resposta**:
+
+```json
+{
+    "access": "novo_token_de_acesso"
+}
+```
+
+### Endpoints da API
+
+A API fornece endpoints para criar e deletar eventos no Google Calendar. Todos os endpoints são protegidos por autenticação JWT.
+
+#### Criar um Evento
+
+**Endpoint**: `POST /api/tasks/`
+
+**Cabeçalho**:
+
+```
+Authorization: Bearer <token_de_acesso>
+```
+
+**Exemplo de Requisição**:
+
+```json
+{
+    "title": "Reunião de Projeto",
+    "description": "Discussão sobre o progresso do projeto",
+    "date": "2023-10-01",
+    "time": "14:00:00"
+}
+```
+
+**Exemplo de Resposta**:
+
+```json
+{
+    "id": 1,
+    "title": "Reunião de Projeto",
+    "description": "Discussão sobre o progresso do projeto",
+    "date": "2023-10-01",
+    "time": "14:00:00",
+    "google_calendar_id": "abc123"
 }
 ```
 
@@ -105,11 +157,37 @@ A API fornece endpoints para criar e deletar eventos no Google Calendar.
 
 **Endpoint**: `DELETE /api/tasks/<id>/`
 
+**Cabeçalho**:
+
+```
+Authorization: Bearer <token_de_acesso>
+```
+
 **Exemplo de Resposta**:
 
 ```json
 {
-     "message": "Evento deletado com sucesso"
+    "message": "Evento deletado com sucesso"
+}
+```
+
+### Rota Protegida
+
+#### Acessar Dados Protegidos
+
+**Endpoint**: `GET /api/protected/`
+
+**Cabeçalho**:
+
+```
+Authorization: Bearer <token_de_acesso>
+```
+
+**Exemplo de Resposta**:
+
+```json
+{
+    "message": "Este é um dado protegido!"
 }
 ```
 
